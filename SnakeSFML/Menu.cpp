@@ -1,11 +1,11 @@
 #include "Menu.h"
-
+#include <iostream>
 Menu::Menu(float width, float height, sf::RenderWindow& window):	
 	win(window)
 {
 	if (!font.loadFromFile("font.ttf"))
 	{
-		
+		std::cout << "Error loading menu font" << std::endl;
 	}	
 
 	menu[0].setFont(font);

@@ -25,6 +25,7 @@ public:
 	void Draw(Board& brd) const;
 	bool isInTile(const location& targetloc) const; //checks the occupied grid of the snake 
 	bool isInTileExceptTail(const location& targetloc) const; //checks the occupied grid of the snake except the tail
+	int getLength() const;
 private:		
 	static constexpr int nSegmentsMax = 100;	//max segments
 	Segment segments[nSegmentsMax]; //array of segments

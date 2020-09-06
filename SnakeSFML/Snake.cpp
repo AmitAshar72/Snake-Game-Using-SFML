@@ -51,6 +51,10 @@ bool Snake::isInTileExceptTail(const location & targetloc) const
 	}
 	return false;
 }
+int Snake::getLength() const
+{
+	return nSegments;
+}
 bool Snake::isInTile(const location & targetloc) const
 {
 	for (int i = 0;i < nSegments;i++) // nSegments -1 because we dont want to check the tail

@@ -11,37 +11,9 @@ Game::Game(sf::RenderWindow& win)
 	m(800.0f,600.0f,win),
 	anim(&obstac,tex,0.5f),
 	anim2(&powerUp,tex,0.65f)
-{
-	//load texture
-	powerUp_tex.loadFromFile("pickup.png");
-	powerUp.setTexture(powerUp_tex);
-	powerUp.setTextureRect(sf::IntRect(128, 0, 128, 128));
-
-	obst.loadFromFile("obstacle.png");
-	obstac.setTexture(obst);
-	obstac.setTextureRect(sf::IntRect(128, 0, 128, 128));
-	
-	if (!splashTex.loadFromFile("splash.png"))
-	{
-		
-	}
-	splash.setTexture(splashTex);
-
-	//load sound
-	bgmusic.openFromFile("bgmusic.ogg");
-	bgmusic.setVolume(50);
-	bgmusic.setLoop(true);
-
-	if (!collide_buffer.loadFromFile("fruit.wav"))
-	{
-		
-	}
-	fruit.setBuffer(collide_buffer);
-	if (!gameover_buffer.loadFromFile("gameover.wav"))
-	{
-
-	}
-	gameOver.setBuffer(gameover_buffer);
+{  
+	loadTextures();
+	loadSound();
 }
 
 void Game::gameInit()
@@ -98,22 +70,38 @@ void Game::update()
 				//handles snake movement
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
-					delta_loc = { 0,-1 };
+					const location new_delta_loc = { 0,-1 };
+					if (delta_loc != -new_delta_loc || snk.getLength() <= 2) //user defined operators in location class
+					{
+						delta_loc = new_delta_loc;
+					}
 					std::cout << "Moving UP" << std::endl;
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				{
-					delta_loc = { 0,1 };
+					const location new_delta_loc = { 0,1 };
+					if (delta_loc != -new_delta_loc || snk.getLength() <= 2)
+					{
+						delta_loc = new_delta_loc;
+					}
 					std::cout << "Moving Down" << std::endl;
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					delta_loc = { -1,0 };
+					const location new_delta_loc = { -1,0 };
+					if (delta_loc != -new_delta_loc || snk.getLength() <= 2)
+					{
+						delta_loc = new_delta_loc;
+					}
 					std::cout << "Moving Left" << std::endl;
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
-					delta_loc = { 1,0 };
+					const location new_delta_loc = { 1,0 };
+					if (delta_loc != -new_delta_loc || snk.getLength() <= 2)
+					{
+						delta_loc = new_delta_loc;
+					}
 					std::cout << "Moving Right" << std::endl;
 				}
 				++snakeMoveCounter; //movement counter increases every frame
@@ -221,6 +209,43 @@ void Game::scoreDisp()
 	text_score.setPosition(675.0f, 20.0f);
 	text_score.setString("Score: "+std::to_string(score));
 	win.draw(text_score);
+}
+
+void Game::loadTextures()
+{
+	//load texture
+	powerUp_tex.loadFromFile("pickup.png");
+	powerUp.setTexture(powerUp_tex);
+	powerUp.setTextureRect(sf::IntRect(128, 0, 128, 128));
+
+	obst.loadFromFile("obstacle.png");
+	obstac.setTexture(obst);
+	obstac.setTextureRect(sf::IntRect(128, 0, 128, 128));
+
+	if (!splashTex.loadFromFile("splash.png"))
+	{
+		std::cout << "Error Loading Splash File"<<std::endl;
+	}
+	splash.setTexture(splashTex);
+}
+
+void Game::loadSound()
+{
+	//load sound
+	bgmusic.openFromFile("bgmusic.ogg");
+	bgmusic.setVolume(50);
+	bgmusic.setLoop(true);
+
+	if (!collide_buffer.loadFromFile("fruit.wav"))
+	{
+		std::cout << "Error Loading fruit.wav File" << std::endl;
+	}
+	fruit.setBuffer(collide_buffer);
+	if (!gameover_buffer.loadFromFile("gameover.wav"))
+	{
+		std::cout << "Error Loading gameover.wav File" << std::endl;
+	}
+	gameOver.setBuffer(gameover_buffer);
 }
 
 
