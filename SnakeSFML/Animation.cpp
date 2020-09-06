@@ -1,8 +1,9 @@
 #include "Animation.h"
 #include <iostream>
-Animation::Animation(sf::Sprite* _sprite, sf::Vector2u imageCount):
+Animation::Animation(sf::Sprite* _sprite, sf::Vector2u imageCount, float switchTime):
 	
-	imageCount(imageCount)
+	imageCount(imageCount),
+	switchTime(switchTime)
 {	
 	currentImage.x=0;
 	uvRect.width = 128.0f;

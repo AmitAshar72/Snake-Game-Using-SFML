@@ -2,8 +2,7 @@
 
 Fruit::Fruit(std::mt19937 & rng, const Board & brd, const Snake & snake)
 {
-	Respawn(rng, brd, snake);
-	//ft.loadFromFile("obstacle.png");
+	Respawn(rng, brd, snake);	
 }
 
 void Fruit::Respawn(std::mt19937 & rng, const Board & brd, const Snake & snake)

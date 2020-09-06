@@ -13,9 +13,8 @@ class Game
 public:	
 	Game(sf::RenderWindow& win );
 	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete; //rule of 3
-	void gameInit();
-	//void render(sf::RenderWindow* wind);
+	Game& operator=(const Game&) = delete; 
+	void gameInit();	
 	
 private:	
 	void update();

@@ -5,7 +5,7 @@ Menu::Menu(float width, float height, sf::RenderWindow& window):
 {
 	if (!font.loadFromFile("font.ttf"))
 	{
-		//error
+		
 	}	
 
 	menu[0].setFont(font);

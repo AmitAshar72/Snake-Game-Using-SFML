@@ -9,32 +9,32 @@ Game::Game(sf::RenderWindow& win)
 	snk({3,4}),		
 	frt(rng, brd, snk),
 	m(800.0f,600.0f,win),
-	anim(&obstac,tex),
-	anim2(&powerUp,tex)
+	anim(&obstac,tex,0.5f),
+	anim2(&powerUp,tex,0.65f)
 {
-	powerUp_tex.loadFromFile("down.png");
+	//load texture
+	powerUp_tex.loadFromFile("pickup.png");
 	powerUp.setTexture(powerUp_tex);
 	powerUp.setTextureRect(sf::IntRect(128, 0, 128, 128));
 
 	obst.loadFromFile("obstacle.png");
 	obstac.setTexture(obst);
 	obstac.setTextureRect(sf::IntRect(128, 0, 128, 128));
-
 	
-
 	if (!splashTex.loadFromFile("splash.png"))
 	{
 		
 	}
 	splash.setTexture(splashTex);
 
+	//load sound
 	bgmusic.openFromFile("bgmusic.ogg");
 	bgmusic.setVolume(50);
 	bgmusic.setLoop(true);
 
 	if (!collide_buffer.loadFromFile("fruit.wav"))
 	{
-
+		
 	}
 	fruit.setBuffer(collide_buffer);
 	if (!gameover_buffer.loadFromFile("gameover.wav"))
@@ -42,10 +42,6 @@ Game::Game(sf::RenderWindow& win)
 
 	}
 	gameOver.setBuffer(gameover_buffer);
-
-	/*if (!obstacle.loadFromFile("obstacle.png")) {}
-	brd.getBoard().setTexture(&obstacle);
-	Animation anim(&obstacle, sf::Vector2u(3, 1), 0.3f);*/
 }
 
 void Game::gameInit()
@@ -57,18 +53,23 @@ void Game::gameInit()
 
 void Game::update()
 {
-	if (!isSplashDone)
+	if (!isSplashDone) //splash screen
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
 			isSplashDone = true;
+			bgmusic.play(); //background music starts
+		}
 	}
 	else 
 	{
 		if (!isGameOver)
 		{
-			if (!hasGameStarted)
+			if (!hasGameStarted) //menu
 			{
-				deltaTime = clock.restart().asSeconds();
+				deltaTime = clock.restart().asSeconds(); //delta time for update function in animation class 
+				
+				//input handling for menu
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
 					m.moveUp();
@@ -83,18 +84,18 @@ void Game::update()
 				{
 					if (menuIndex == 0)
 					{
-						hasGameStarted = true;
-						bgmusic.play();
+						hasGameStarted = true;		//starts game				
 					}
 					else
 					{
-						win.close();
+						win.close(); //closes window
 					}
 
 				}
 			}
-			else
+			else //game
 			{
+				//handles snake movement
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
 					delta_loc = { 0,-1 };
@@ -115,39 +116,42 @@ void Game::update()
 					delta_loc = { 1,0 };
 					std::cout << "Moving Right" << std::endl;
 				}
-				++snakeMoveCounter;
-				if (snakeMoveCounter >= snakeMovePeriod)
+				++snakeMoveCounter; //movement counter increases every frame
+				if (snakeMoveCounter >= snakeMovePeriod) //when the movement counter is more than move period, snake moves
+					//initially set to move snake one grid per second
 				{
 					snakeMoveCounter = 0;
-					const location next = snk.GetNextHeadLocation(delta_loc);
+					const location next = snk.GetNextHeadLocation(delta_loc); //gets snake's head's next location
 					if (!brd.isInsideBoard(next) ||
 						snk.isInTileExceptTail(next) ||
-						brd.CheckForObstacle(next))
+						brd.CheckForObstacle(next)) //end game check
+						//if the snake touches the border or the obstacle or itself, then game is over
 					{
 						isGameOver = true;
-						bgmusic.stop();
-						gameOver.play();
+						bgmusic.stop(); //background music stops
+						gameOver.play(); //game over sound effect
 					}
 					else
 					{
-
 						if (next == frt.GetLocation())
 						{
-							snk.Grow();
-							frt.Respawn(rng, brd, snk);
-							fruit.play();
-							brd.SpawnObstacle(rng, snk, frt);
-							score++;
+							snk.Grow(); //calls grow function when snake eats fruit
+							frt.Respawn(rng, brd, snk); // respawns the fruit to another location
+							fruit.play(); //sound effect when snake eats fruit
+							brd.SpawnObstacle(rng, snk, frt); //eating fruit is the queue for obstacle to be spawned
+							score++; //player score increases by 1
 						}
-						snk.MoveBy(delta_loc);
+						snk.MoveBy(delta_loc); //snake moves with delta_loc value, initially set to {1,0}. Means snake moves right at the beginning
+
 					}
 				}
-				++snakeSpeedupCounter;
-				if (snakeSpeedupCounter >= snakeSpeedUpPeriod)
+				++snakeSpeedupCounter; //speed counter increases every frame
+				if (snakeSpeedupCounter >= snakeSpeedUpPeriod) //when the speed counter is more than speed period, snake move period is decreased
 				{
 					snakeSpeedupCounter = 0;
 					std::cout << "Speed++" << std::endl;
-					snakeMovePeriod = std::max(snakeMovePeriod - 1, snakeMovePeriodMin);
+					snakeMovePeriod = std::max(snakeMovePeriod - 1, snakeMovePeriodMin); //returns the max of the least values
+				
 				}
 			}
 					   
@@ -162,42 +166,41 @@ void Game::compose()
 	{
 		if (!isSplashDone)
 		{
-			win.draw(splash);
+			win.draw(splash); //draws splash to screen
+			//Text Space to enter
 		}
 		else
 		{
 			if (!hasGameStarted)
 			{
-				m.draw();
+				m.draw(); //draws menu to screen
+				//Text Arrow keys/enter to navigate
 			}
 			else
 			{
-				snk.Draw(brd);
-				frt.Draw(brd, powerUp);
-				brd.DrawBorder();
-				brd.DrawObstacles(obstac);
-				//brd.DrawFruit(powerUp);
-				anim.update(0, deltaTime);
-				anim2.update(0,deltaTime);
-				scoreDisp();
+				snk.Draw(brd); //draw call for snake
+				frt.Draw(brd, powerUp); ////draw call for fruit
+				brd.DrawBorder(); ////draw call for border
+				brd.DrawObstacles(obstac); //draw call for obstacle
+				
+				anim.update(0, deltaTime); //handles obstacle sprite
+				anim2.update(0,deltaTime); //handles pickup sprite
+				scoreDisp(); //displays score
 			}
 		}
 	}		
-	else
+	else //gameover
 	{
-		Endgame();	
+		Endgame();	//gameover prompt
 		scoreDisp();
 	}
 	
 }
 
-
 void Game::Endgame()
 {
 	sf::Font font;
-	font.loadFromFile("font.ttf");
-	// Create a text
-	//sf::Text text("Game Over", font);
+	font.loadFromFile("font.ttf");	
 	text.setFont(font);
 	text.setCharacterSize(30);
 	text.setStyle(sf::Text::Bold);	
@@ -210,9 +213,7 @@ void Game::Endgame()
 void Game::scoreDisp()
 {
 	sf::Font font;
-	font.loadFromFile("font.ttf");
-	// Create a text
-	//sf::Text text("Game Over", font);
+	font.loadFromFile("font.ttf");	
 	text_score.setFont(font);
 	text_score.setCharacterSize(25);
 	text_score.setStyle(sf::Text::Bold);
@@ -223,23 +224,7 @@ void Game::scoreDisp()
 }
 
 
-//void Game::render(sf::RenderWindow* wind)
-//{/*
-//	std::uniform_int_distribution<int> colorDist(0, 255);
-//	for (int y = 0;y < brd.GetGridHeight();y++)
-//	{
-//		for (int x = 0;x < brd.GetGridWidth();x++)
-//		{
-//			location loc = { x,y };
-//			sf::Color c(colorDist(rng), colorDist(rng), colorDist(rng));
-//			brd.DrawCell(loc, c);
-//			wind->draw(brd.getBoard());
-//		}
-//	}*/
-//	snk.Draw(brd);
-//	wind->draw(brd.getBoard());
-//	
-//}
+
 
 
 

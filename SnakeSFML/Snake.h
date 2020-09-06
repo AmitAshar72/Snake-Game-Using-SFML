@@ -4,33 +4,30 @@
 class Snake
 {
 private:
-	class Segment
+	class Segment //segments together join to form a snake
 	{
 	public:		
-		void InitHead(const location& loc);
-		void InitBody();
-		void Follow(const Segment& next);
-		void MoveBy(const location& delta_loc);
-		void Draw(Board& brd) const;
+		void InitHead(const location& loc); //initializes head of the snake
+		void InitBody(); //initializes head of the body
+		void Follow(const Segment& next); //follows the head of the body
+		void MoveBy(const location& delta_loc); //adds Location value
+		void Draw(Board& brd) const; //calls draw function in the snake class with location and color as parameters
 		const location& GetLocation() const; // just peeking at the value, rather than creating a copy
 	private:
 		location loc;		
-		sf::Color c;
-		//static sf::Texture segTex;
-		
+		sf::Color c;		
 	};
 public:
 	Snake(const location& loc);
-	//static sf::Texture snkTex;
 	void MoveBy(const location& delta_loc);
 	location GetNextHeadLocation(const location& delta_loc) const; //position of the head of the snake after location change (delta_loc)
-	void Grow();
+	void Grow(); //adds a segment
 	void Draw(Board& brd) const;
-	bool isInTile(const location& targetloc) const;
-	bool isInTileExceptTail(const location& targetloc) const;
+	bool isInTile(const location& targetloc) const; //checks the occupied grid of the snake 
+	bool isInTileExceptTail(const location& targetloc) const; //checks the occupied grid of the snake except the tail
 private:		
-	static constexpr int nSegmentsMax = 100;	
-	Segment segments[nSegmentsMax];
-	int nSegments = 1;
+	static constexpr int nSegmentsMax = 100;	//max segments
+	Segment segments[nSegmentsMax]; //array of segments
+	int nSegments = 1; //segment counter
 };
 

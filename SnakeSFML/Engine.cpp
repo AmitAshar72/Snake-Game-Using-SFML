@@ -1,5 +1,5 @@
 #include "Engine.h"
-#include<iostream>
+
 using namespace sf;
 
 RenderWindow Engine::window;
@@ -8,9 +8,7 @@ Game Engine::g(window);
 void Engine::initialize()
 {
 	window.create(VideoMode(screenwidth, screenheight),"Snake");
-	window.setFramerateLimit(60);
-	std::cout << window.getSize().x<<" "<< window.getSize().y <<std::endl;
-	//Game theG(&window);
+	window.setFramerateLimit(60);	
 }
 
 bool Engine::isRunning()
@@ -36,10 +34,7 @@ void Engine::handleEvents()
 	g.gameInit();
 }
 
-void Engine::render(){
-	
-	//render(&window);
-	//g.render();
-	//window.draw(g.brd.getBoard());
+void Engine::render()
+{	
 	window.display();
 }

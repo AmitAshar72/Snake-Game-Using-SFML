@@ -6,10 +6,10 @@ class Engine
 private:
 	static sf::RenderWindow window;
 public:		
-	static void initialize();
-	static bool isRunning();
-	static void handleEvents();
-	static void render();
+	static void initialize(); //initalizes window
+	static bool isRunning(); //checks if window is running
+	static void handleEvents(); //handles events and calls gameinit here
+	static void render(); // displays onto the screen
 	static Game g;
 private:
 	static constexpr float screenwidth = 800.0f;
